@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/object/try'
 
@@ -371,7 +372,12 @@ module ActiveSupport
         case arg
           when String
           begin
-            lazy_zones_map[arg] ||= lookup(arg).tap { |tz| tz.utc_offset }
+            zone = lookup(arg).tap { |tz| tz.utc_offset }
+            if @zones && !@zones.include?(zone)
+              @zones << zone
+              @zones.sort!
+            end
+            lazy_zones_map[arg] ||= zone
           rescue TZInfo::InvalidTimezoneIdentifier
             nil
           end

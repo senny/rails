@@ -294,8 +294,15 @@ class TimeZoneTest < ActiveSupport::TestCase
   def test_all_sorted
     all = ActiveSupport::TimeZone.all
     1.upto( all.length-1 ) do |i|
-      assert all[i-1] < all[i]
+      assert all[i-1] < all[i], "#{all[i-1]} should be < than #{all[i]}"
     end
+  end
+
+  def test_all_includes_previously_looked_up_zones
+    ActiveSupport::TimeZone.all # trigger caching
+
+    chicago = ActiveSupport::TimeZone['America/Chicago']
+    assert ActiveSupport::TimeZone.all.include?(chicago), "the cache did not include: '#{chicago}'"
   end
 
   def test_index
