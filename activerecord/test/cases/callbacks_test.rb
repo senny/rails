@@ -1,4 +1,6 @@
 require "cases/helper"
+require "models/pet"
+require "models/owner"
 
 class CallbackDeveloper < ActiveRecord::Base
   self.table_name = 'developers'
@@ -531,5 +533,16 @@ class CallbacksTest < ActiveRecord::TestCase
     child.save
     assert child.after_save_called
   end
+end
 
+class CallbacksTest < ActiveRecord::TestCase
+  fixtures :pets, :owners
+
+  def test_after_touch_callback_called_on_belongs_to
+    chew = pets(:chew)
+    ashley = chew.owner
+    chew.updated_at = Time.now
+    chew.save!
+    assert_equal true, ashley.after_touch_callack_executed
+  end
 end
