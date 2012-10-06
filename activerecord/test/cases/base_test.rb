@@ -336,6 +336,13 @@ class BasicsTest < ActiveRecord::TestCase
     assert_equal parrot, the_same_parrot
   end
 
+  def test_first_or_create_with_callbacks
+    # make sure, that the attribute is not set without the callback beeing run
+    assert_equal nil, Topic.new.written_on
+    topic = Topic.where(:title => 'new topic').first_or_create
+    assert_not_equal nil, topic.written_on
+  end
+
   def test_first_or_initialize
     parrot = Bird.first_or_initialize(:color => 'green', :name => 'parrot')
     assert_kind_of Bird, parrot
