@@ -1014,6 +1014,11 @@ class RelationTest < ActiveRecord::TestCase
     assert_raises(ActiveRecord::RecordInvalid) { Bird.where(:color => 'green').first_or_create!([ {:name => 'parrot'}, {:pirate_id => 1} ]) }
   end
 
+  def test_first_or_create_respects_inheritance_column
+    firm = Company.where(:type => 'Firm', :name => 'I do not exist').first_or_create
+    assert_kind_of Firm, firm
+  end
+
   def test_first_or_initialize
     parrot = Bird.where(:color => 'green').first_or_initialize(:name => 'parrot')
     assert_kind_of Bird, parrot
