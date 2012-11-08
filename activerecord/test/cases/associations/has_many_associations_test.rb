@@ -728,6 +728,14 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     assert_equal topic.replies.to_a.size, topic.replies_count
   end
 
+  def tests_creating_a_comments_with_posts_increments_counter_using_push
+    topic = Topic.order("id ASC").first
+
+    assert_difference "topic.reload.replies_count", 1 do
+      topic.replies << Reply.new
+    end
+  end
+
   def test_deleting_updates_counter_cache_without_dependent_option
     post = posts(:welcome)
 
