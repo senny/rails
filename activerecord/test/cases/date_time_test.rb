@@ -40,4 +40,10 @@ class DateTimeTest < ActiveRecord::TestCase
     topic.bonus_time = ''
     assert_nil topic.bonus_time
   end
+
+  def test_date_time_conditions
+    task = Task.create! :starting => DateTime.new(2001,2,3)
+    the_task = Task.where(:starting => DateTime.new(2001,2,3)).first
+    assert_equal task.id, the_task.id
+  end
 end
