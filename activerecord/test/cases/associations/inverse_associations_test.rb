@@ -164,7 +164,15 @@ class InverseHasOneTests < ActiveRecord::TestCase
 end
 
 class InverseHasManyTests < ActiveRecord::TestCase
-  fixtures :men, :interests
+  fixtures :men, :interests, :zines
+
+  def test_inverse_of_and_association_ids_works_with_through_association
+    peter = Man.new(:zine_ids => [zines(:staying_in).id, zines(:going_out).id])
+    assert_difference 'peter.interests.count', 2 do
+      peter.save!
+    end
+    assert_equal 2, peter.zines.count
+  end
 
   def test_parent_instance_should_be_shared_with_every_child_on_find
     m = men(:gordon)
