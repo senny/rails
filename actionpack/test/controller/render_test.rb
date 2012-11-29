@@ -702,6 +702,14 @@ class TestController < ActionController::Base
     render :partial => "customer"
   end
 
+  def render_partial_with_layout
+    render :partial => 'partial', :layout => true
+  end
+
+  def render_partial_with_specific_layout
+    render :partial => 'partial', :layout => 'standard'
+  end
+
   def render_call_to_partial_with_layout
     render :action => "calling_partial_with_layout"
   end
@@ -1504,6 +1512,16 @@ class RenderTest < ActionController::TestCase
     assert_raise(ActionView::MissingTemplate) do
       get :missing_partial
     end
+  end
+
+  def test_render_partial_with_layout
+    get :render_partial_with_layout
+    assert_equal "partial html", @response.body
+  end
+
+  def test_render_partial_with_specific_layout
+    get :render_partial_with_specific_layout
+    assert_equal "<html>partial html</html>", @response.body
   end
 
   def test_render_call_to_partial_with_layout
