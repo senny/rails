@@ -1313,6 +1313,10 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     assert_equal authors(:david).hello_post_comments, authors(:david).hello_post_comments_with_hash_conditions
   end
 
+  def test_has_many_scope_lets_you_override_default_join_condition
+    assert_not_equal [], authors(:david).comments_with_relation
+  end
+
   def test_include_uses_array_include_after_loaded
     firm = companies(:first_firm)
     firm.clients.load_target

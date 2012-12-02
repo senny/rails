@@ -23,6 +23,7 @@ class Author < ActiveRecord::Base
   has_one  :post_about_thinking, -> { where("posts.title like '%thinking%'") }, :class_name => 'Post'
   has_one  :post_about_thinking_with_last_comment, -> { where("posts.title like '%thinking%'").includes(:last_comment) }, :class_name => 'Post'
   has_many :comments, :through => :posts
+  has_many :comments_with_relation, ->(author) { joins(:post).where('posts.author_id = ?', author.id) }, :class_name => 'Comment'
   has_many :comments_containing_the_letter_e, :through => :posts, :source => :comments
   has_many :comments_with_order_and_conditions, -> { order('comments.body').where("comments.body like 'Thank%'") }, :through => :posts, :source => :comments
   has_many :comments_with_include, -> { includes(:post) }, :through => :posts, :source => :comments
