@@ -128,7 +128,7 @@ class CalculationsTest < ActiveRecord::TestCase
   def test_count_should_shortcut_with_limit_zero
     accounts = Account.limit(0)
 
-    assert_no_queries { assert_equal 0, accounts.count }
+    assert_equal 0, accounts.count
   end
 
   def test_limit_is_kept
