@@ -322,7 +322,7 @@ class CalculationsTest < ActiveRecord::TestCase
 
   def test_should_count_scoped_select
     Account.update_all("credit_limit = NULL")
-    assert_equal 0, Account.all.merge!(:select => "credit_limit").count
+    assert_equal 0, Account.select(:credit_limit).count
   end
 
   def test_should_count_scoped_select_with_options
@@ -330,11 +330,11 @@ class CalculationsTest < ActiveRecord::TestCase
     Account.last.update_columns('credit_limit' => 49)
     Account.first.update_columns('credit_limit' => 51)
 
-    assert_equal 1, Account.all.merge!(:select => "credit_limit").where('credit_limit >= 50').count
+    assert_equal 1, Account.select(:credit_limit).where('credit_limit >= 50').count
   end
 
   def test_should_count_manual_select_with_include
-    assert_equal 6, Account.all.merge!(:select => "DISTINCT accounts.id", :includes => :firm).count
+    assert_equal 6, Account.select("DISTINCT accounts.id").includes(:firm).count
   end
 
   def test_count_with_column_parameter
