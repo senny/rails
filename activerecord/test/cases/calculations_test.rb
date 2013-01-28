@@ -355,7 +355,7 @@ class CalculationsTest < ActiveRecord::TestCase
   end
 
   def test_should_count_field_in_joined_table_with_group_by
-    c = Account.all.merge!(:group => 'accounts.firm_id', :joins => :firm).count('companies.id')
+    c = Account.group('accounts.firm_id').joins(:firm).count('companies.id')
 
     [1,6,2,9].each { |firm_id| assert c.keys.include?(firm_id) }
   end
@@ -457,6 +457,10 @@ class CalculationsTest < ActiveRecord::TestCase
     # Count the number of distinct authors for approved Topics
     distinct_authors_for_approved_count = Topic.group(:approved).count(:author_name, :distinct => true)[true]
     assert_equal distinct_authors_for_approved_count, 2
+
+    # use #count with #uniq
+    uniq_authors_for_approved_count = Topic.group(:approved).uniq.count(:author_name)[true]
+    assert_equal uniq_authors_for_approved_count, 2
   end
 
   def test_pluck

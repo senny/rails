@@ -11,8 +11,11 @@ module ActiveRecord
     #   Person.count(:all)
     #   # => performs a COUNT(*) (:all is an alias for '*')
     #
-    #   Person.count(:age, distinct: true)
-    #   # => counts the number of different age values
+    #   Person.uniq.count(:age)
+    #   # => counts the number of different (SQL distinct) age values
+    #
+    #   Person.select('DISTINCT age').count
+    #   # => counts the number of different (SQL distinct) age values, using raw SQL.
     def count(column_name = nil, options = {})
       column_name, options = nil, column_name if column_name.is_a?(Hash)
       calculate(:count, column_name, options)
