@@ -96,19 +96,19 @@ module ActiveRecord
     #
     #   Person.sum("2 * age")
     def calculate(operation, column_name, options = {})
+      puts "\n{"
       relation = with_default_scope
+      return relation.calculate(operation, column_name, options) unless relation.equal?(self)
 
-      if relation.equal?(self)
-        if has_include?(column_name)
-          construct_relation_for_association_calculations.calculate(operation, column_name, options)
-        else
-          perform_calculation(operation, column_name, options)
-        end
-      else
-        relation.calculate(operation, column_name, options)
+      if has_include?(column_name)
+        return construct_relation_for_association_calculations.calculate(operation, column_name, options)
       end
+
+      perform_calculation(operation, column_name, options)
     rescue ThrowResult
       0
+    ensure
+      puts "}"
     end
 
     # Use <tt>pluck</tt> as a shortcut to select one or more attributes without
@@ -199,7 +199,7 @@ module ActiveRecord
       distinct = options[:distinct] || self.uniq_value
 
       if operation == "count"
-        column_name ||= (select_for_count || :all)
+        column_name ||= select_for_count
 
         unless arel.ast.grep(Arel::Nodes::OuterJoin).empty?
           distinct = true
@@ -366,10 +366,13 @@ module ActiveRecord
     end
 
     def select_for_count
-      if select_values.present?
-        select = select_values.join(", ")
-        select if select !~ /[,*]/
-      end
+      return :all if select_values.blank?
+      return :all if select_values.size > 1
+
+      column = select_values.first
+      return :all if column =~ /[,*]/
+
+      column
     end
 
     def build_count_subquery(relation, column_name, distinct)

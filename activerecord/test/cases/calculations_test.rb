@@ -337,6 +337,10 @@ class CalculationsTest < ActiveRecord::TestCase
     assert_equal 6, Account.select("DISTINCT accounts.id").includes(:firm).count
   end
 
+  def test_should_invalid_count_falls_back_on_count_all
+    assert_equal 6, Account.select("accounts.id, accounts.firm_name").count
+  end
+
   def test_count_with_column_parameter
     assert_equal 5, Account.count(:firm_id)
   end
