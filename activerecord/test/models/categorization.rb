@@ -17,3 +17,11 @@ class SpecialCategorization < ActiveRecord::Base
   belongs_to :author
   belongs_to :category
 end
+
+class OrderedCategorization < ActiveRecord::Base
+  self.table_name = 'categorizations'
+  default_scope { order('categorizations.category_id') }
+
+  belongs_to :default_scope_post, foreign_key: :post_id, class_name: 'PostWithDefaultScope'
+  belongs_to :author
+end

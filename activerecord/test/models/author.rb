@@ -68,6 +68,7 @@ class Author < ActiveRecord::Base
   has_many :unchangable_posts, :class_name => "Post", :before_add => :raise_exception, :after_add => :log_after_adding
 
   has_many :categorizations
+  has_many :ordered_categorizations, :class_name => 'OrderedCategorization'
   has_many :categories, :through => :categorizations
   has_many :named_categories, :through => :categorizations
 
@@ -79,6 +80,7 @@ class Author < ActiveRecord::Base
 
   has_many :categorized_posts, :through => :categorizations, :source => :post
   has_many :unique_categorized_posts, -> { uniq }, :through => :categorizations, :source => :post
+  has_many :unique_categorized_posts_with_default_sort, -> { uniq }, through: :ordered_categorizations, source: :default_scope_post
 
   has_many :nothings, :through => :kateggorisatons, :class_name => 'Category'
 

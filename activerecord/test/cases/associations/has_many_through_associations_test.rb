@@ -901,4 +901,9 @@ class HasManyThroughAssociationsTest < ActiveRecord::TestCase
     readers(:michael_authorless).update(first_post_id: 1)
     assert_equal [posts(:thinking)], person.reload.first_posts
   end
+
+  test "has many through with default order scope on the target" do
+    author = authors(:bob)
+    assert_equal [posts(:misc_by_bob)], author.unique_categorized_posts_with_default_sort
+  end
 end
