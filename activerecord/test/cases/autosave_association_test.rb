@@ -688,6 +688,17 @@ class TestDestroyAsPartOfAutosaveAssociation < ActiveRecord::TestCase
     assert_equal 'NewName', @parrot.reload.name
   end
 
+  def test_mark_for_destruction_works_for_new_records
+    pirate = Pirate.new(catchphrase: "yiiihaaaa",
+                        birds_attributes: [{name: "Flamingo"},
+                                           {name: "Owl"},
+                                           {name: "Penguin"}])
+
+    pirate.birds[1].mark_for_destruction
+    pirate.save!
+    assert_equal ["Flamingo", "Penguin"], pirate.birds.reload.map(&:name)
+  end
+
   def test_should_destroy_has_many_as_part_of_the_save_transaction_if_they_were_marked_for_destruction
     2.times { |i| @pirate.birds.create!(:name => "birds_#{i}") }
 
