@@ -296,11 +296,34 @@ The schema dumper adds one additional configuration option:
 
 * `config.action_controller.allow_forgery_protection` enables or disables CSRF protection. By default this is `false` in test mode and `true` in all other modes.
 
-* `config.action_controller.relative_url_root` can be used to tell Rails that you are deploying to a subdirectory. The default is `ENV['RAILS_RELATIVE_URL_ROOT']`.
-
 * `config.action_controller.permit_all_parameters` sets all the parameters for mass assignment to be permitted by default. The default value is `false`.
 
 * `config.action_controller.action_on_unpermitted_params` enables logging or raising an exception if parameters that are not explicitly permitted are found. Set to `:log` or `:raise` to enable. The default value is `:log` in development and test environments, and `false` in all other environments.
+
+#### Running your application with a relative url root
+
+Normally your rails application runs at the root. If you want to
+deploy your application in a subdirectory you need to configure
+`config.action_controller.relative_url_root`. This configuration
+option holds the URL prefix.
+
+For example, if you want to deploy your application with the prefix
+"/admin" you need to set the configuration option accordingly:
+
+```ruby
+config.action_controller.relative_url_root = "/admin"
+```
+
+or
+
+```
+export RAILS_RELATIVE_URL_ROOT="/admin"
+```
+
+NOTE: simply setting `config.action_controller.relative_url_root` is
+not enough. You need to make sure that the SCRIPT_NAME and PATH_INFO
+CGI variables are set accordingly. This can be achieved by configuring
+your webserver or by modifying the `config.ru` file.
 
 ### Configuring Action Dispatch
 
