@@ -44,6 +44,18 @@ class PostgresqlArrayTest < ActiveRecord::TestCase
     assert_equal([nil], @column.type_cast('{NULL}'))
   end
 
+  test "change column does not support array option" do
+    @connection.transaction do
+      @connection.add_column "pg_arrays", "labels", :string
+      e = assert_raises(ArgumentError) do
+        @connection.change_column "pg_arrays", "labels", :string, array: true
+      end
+      assert_match "passing :array to change_column is not supported.", e.message
+
+      raise ActiveRecord::Rollback # rollback the schema changes
+    end
+  end
+
   def test_rewrite
     @connection.execute "insert into pg_arrays (tags) VALUES ('{1,2,3}')"
     x = PgArray.first

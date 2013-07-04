@@ -382,6 +382,9 @@ module ActiveRecord
 
         # Changes the column of a table.
         def change_column(table_name, column_name, type, options = {})
+          if options.key?(:array)
+            raise ArgumentError, "passing :array to change_column is not supported."
+          end
           clear_cache!
           quoted_table_name = quote_table_name(table_name)
 
