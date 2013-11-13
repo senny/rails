@@ -1,3 +1,7 @@
+*   Use strings to represent non-string `order_values`.
+
+    *Yves Senn*
+
 *   Prevent the counter cache from being decremented twice when destroying
     a record on a has_many :through association.
 
