@@ -49,7 +49,7 @@ module ActiveRecord
 
       def initialize(name, default, oid_type, sql_type = nil, null = true)
         @oid_type = oid_type
-        default_value     = self.class.extract_value_from_default(default)
+        default_value = self.class.extract_value_from_default(default, @oid_type)
 
         if sql_type =~ /\[\]$/
           @array = true
@@ -79,7 +79,7 @@ module ActiveRecord
       # :startdoc:
 
       # Extracts the value from a PostgreSQL column default definition.
-      def self.extract_value_from_default(default)
+      def self.extract_value_from_default(default, oid_type)
         # This is a performance optimization for Ruby 1.9.2 in development.
         # If the value is nil, we return nil straight away without checking
         # the regular expressions. If we check each regular expression,
@@ -135,9 +135,13 @@ module ActiveRecord
           when /\A-?\d+\z/
             $1
           else
-            # Anything else is blank, some user type, or some function
-            # and we can't know the value of that, so return nil.
-            nil
+            if oid_type && oid_type.respond_to?(:extract_default)
+              oid_type.extract_default(default)
+            else
+              # Anything else is blank, some user type, or some function
+              # and we can't know the value of that, so return nil.
+              nil
+            end
         end
       end
 

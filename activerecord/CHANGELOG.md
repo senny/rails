@@ -1,3 +1,7 @@
+*   Recognize default value for PostgreSQL enum columns. Fixes #7814.
+
+    *Yves Senn*
+
 *   Save `has_one` association even if the record doesn't changed.
 
     Fixes #14407.

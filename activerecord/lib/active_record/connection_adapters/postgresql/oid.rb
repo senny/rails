@@ -230,6 +230,12 @@ This is not reliable and will be removed in the future.
         end
 
         class Enum < Type
+          def extract_default(default)
+            if default =~ /'(.*)'::/
+              $1
+            end
+          end
+
           def type_cast(value)
             value.to_s
           end
