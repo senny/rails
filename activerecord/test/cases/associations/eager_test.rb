@@ -1232,4 +1232,22 @@ class EagerAssociationTest < ActiveRecord::TestCase
       assert_equal 2, author.posts.size
     }
   end
+
+  test "include instance dependent associations is deprecated" do
+    assert_deprecated "association scope 'posts_with_signature' is" do
+      begin
+        Author.includes(:posts_with_signature).to_a
+      rescue NoMethodError
+        # it's expected that preloading of this association fails
+      end
+    end
+
+    assert_deprecated do
+      Author.preload(:posts_with_signature).to_a rescue NoMethodError
+    end
+
+    assert_deprecated do
+      Author.eager_load(:posts_with_signature).to_a rescue NoMethodError
+    end
+  end
 end

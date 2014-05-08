@@ -174,6 +174,13 @@ module ActiveRecord
 
         if owners.first.association(reflection.name).loaded?
           return AlreadyLoaded
+        elsif reflection.scope && reflection.scope.arity > 0
+          ActiveSupport::Deprecation.warn <<-WARNING
+The association scope '#{reflection.name}' is instance dependent (the scope block takes an argument).
+Preloading happens before the individual instances are created. This means that there is no instance
+being passed to the association scope. This will most likely result in broken or incorrect behavior.
+Preloading these associations is deprecated and will be removed in the future.
+          WARNING
         end
 
         case reflection.macro
