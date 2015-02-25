@@ -648,6 +648,18 @@ XML
     assert_equal "application/json", parsed_env["CONTENT_TYPE"]
   end
 
+  test "response contains default headers" do
+    original_default_headers = ActionDispatch::Response.default_headers
+    begin
+      ActionDispatch::Response.default_headers = { 'X-Frame-Options' => 'DENY' }
+
+      get :no_op
+      assert_equal 'DENY', response.headers["X-Frame-Options"]
+    ensure
+      ActionDispatch::Response.default_headers = original_default_headers
+    end
+  end
+
   def test_id_converted_to_string
     get :test_params, params: {
       id: 20, foo: Object.new

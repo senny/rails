@@ -1,3 +1,10 @@
+*   fix regression, responses in functional test should have default headers
+    assigned.
+
+    See #18423.
+
+    *Yves Senn*
+
 *   Deprecate AbstractController#skip_action_callback in favor of individual skip_callback methods
     (which can be made to raise an error if no callback was removed).
 

@@ -319,6 +319,15 @@ module ActionDispatch
           MSG
         end
 
+        class IntegrationTestResponse < ActionDispatch::TestResponse
+          def merge_default_headers(original, *args)
+            # Default headers are already applied, no need to merge them a second time.
+            # This makes sure that default headers, removed in controller actions, will
+            # not be reapplied to the test response.
+            original
+          end
+        end
+
         # Performs the actual request.
         def process(method, path, params: nil, headers: nil, env: nil, xhr: false)
           if path =~ %r{://}
@@ -369,7 +378,7 @@ module ActionDispatch
           @request_count += 1
           @request  = ActionDispatch::Request.new(session.last_request.env)
           response = _mock_session.last_response
-          @response = ActionDispatch::TestResponse.new(response.status, response.headers, response.body)
+          @response = IntegrationTestResponse.new(response.status, response.headers, response.body)
           @html_document = nil
           @url_options = nil
 
